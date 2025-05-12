@@ -1,9 +1,9 @@
-# Copyright (C) 2025 by Alexa_Help @ Github, < https://github.com/TheTeamAlexa >
+# Copyright (C) 2024 by Alexa_Help @ Github, < https://github.com/TheTeamAlexa >
 # Subscribe On YT < Jankari Ki Duniya >. All rights reserved. © Alexa © Yukki.
 
-"""
+""""
 TheTeamAlexa is a project of Telegram bots with variety of purposes.
-Copyright (c) 2021 ~ Present Team Alexa <https://github.com/TheTeamAlexa>
+Copyright (c) 2024 -present Team=Alexa <https://github.com/TheTeamAlexa>
 
 This program is free software: you can redistribute it and can modify
 as you want or you can collabe if you have new ideas.
@@ -37,7 +37,7 @@ async def helper_private(
     if is_callback:
         try:
             await update.answer()
-        except Exception:
+        except:
             pass
         chat_id = update.message.chat.id
         language = await get_lang(chat_id)
@@ -53,7 +53,7 @@ async def helper_private(
         if await is_commanddelete_on(update.chat.id):
             try:
                 await update.delete()
-            except Exception:
+            except:
                 pass
         language = await get_lang(chat_id)
         _ = get_string(language)
@@ -79,11 +79,12 @@ async def helper_cb(client, CallbackQuery, _):
             return await CallbackQuery.answer(
                 "ᴏɴʟʏ ғᴏʀ ᴏᴡɴᴇʀ ᴀɴᴅ sᴜᴅᴏᴇʀs", show_alert=True
             )
-        await CallbackQuery.edit_message_text(helpers.HELP_5, reply_markup=keyboard)
-        return await CallbackQuery.answer()
+        else:
+            await CallbackQuery.edit_message_text(helpers.HELP_5, reply_markup=keyboard)
+            return await CallbackQuery.answer()
     try:
         await CallbackQuery.answer()
-    except Exception:
+    except:
         pass
     if cb == "hb1":
         await CallbackQuery.edit_message_text(helpers.HELP_1, reply_markup=keyboard)
