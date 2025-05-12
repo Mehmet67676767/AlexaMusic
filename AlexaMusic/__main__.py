@@ -9,7 +9,6 @@ This program is free software: you can redistribute it and can modify
 as you want or you can collabe if you have new ideas.
 """
 
-
 import asyncio
 import importlib
 from typing import Any
@@ -38,12 +37,12 @@ async def init() -> None:
             BANNED_USERS.add(user_id)
         for user_id in await get_banned_users():
             BANNED_USERS.add(user_id)
-    except Exception:
+    except:
         pass
     await app.start()
     await save_cookies()
     for module in ALL_MODULES:
-        importlib.import_module(f"AlexaMusic.plugins{module}")
+        importlib.import_module("AlexaMusic.plugins" + module)
     LOGGER("AlexaMusic.plugins").info("Necessary Modules Imported Successfully.")
     await userbot.start()
     await Alexa.start()
@@ -54,7 +53,7 @@ async def init() -> None:
             "[ERROR] - \n\nTurn on group voice chat and don't put it off otherwise I'll stop working thanks."
         )
         exit()
-    except Exception:
+    except:
         pass
     await Alexa.decorators()
     LOGGER("AlexaMusic").info("Alexa Music Bot Started Successfully")
@@ -65,5 +64,10 @@ async def init() -> None:
 
 
 if __name__ == "__main__":
-    asyncio.get_event_loop().run_until_complete(init())
-    LOGGER("AlexaMusic").info("Stopping Music Bot")
+    try:
+        asyncio.get_event_loop().run_until_complete(init())
+        LOGGER("AlexaMusic").info("Stopping Music Bot")
+    except Exception as e:
+        print(f"[HATA] Tür: {type(e).__name__} - Mesaj: {e}")
+        import traceback
+        traceback.print_exc()
