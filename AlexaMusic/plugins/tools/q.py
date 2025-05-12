@@ -7,7 +7,6 @@ from pyrogram.types import Message
 from AlexaMusic import app
 
 fetch = AsyncClient(
-    http2=True,
     verify=False,
     headers={
         "Accept-Language": "id-ID",
