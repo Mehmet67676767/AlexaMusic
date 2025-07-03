@@ -1,29 +1,17 @@
-# Copyright (C) 2025 by Alexa_Help @ Github, < https://github.com/TheTeamAlexa >
-# Subscribe On YT < Jankari Ki Duniya >. All rights reserved. © Alexa © Yukki.
-
-"""
-TheTeamAlexa is a project of Telegram bots with variety of purposes.
-Copyright (c) 2021 ~ Present Team Alexa <https://github.com/TheTeamAlexa>
-
-This program is free software: you can redistribute it and can modify
-as you want or you can collabe if you have new ideas.
-"""
 
 import os
 import re
 
 import yt_dlp
 from pykeyboard import InlineKeyboard
-from pyrogram import enums, filters
-from pyrogram.types import (
-    InlineKeyboardButton,
-    InlineKeyboardMarkup,
-    InputMediaAudio,
-    InputMediaVideo,
-    Message,
-)
+from pyrogram import filters
+from pyrogram.enums import ChatAction
+from pyrogram.types import (InlineKeyboardButton,
+                            InlineKeyboardMarkup, InputMediaAudio,
+                            InputMediaVideo, Message)
 
-from config import BANNED_USERS, SONG_DOWNLOAD_DURATION, SONG_DOWNLOAD_DURATION_LIMIT
+from config import (BANNED_USERS, SONG_DOWNLOAD_DURATION,
+                    SONG_DOWNLOAD_DURATION_LIMIT)
 from strings import get_command
 from AlexaMusic import YouTube, app
 from AlexaMusic.utils.decorators.language import language, languageCB
@@ -34,26 +22,20 @@ from AlexaMusic.utils.inline.song import song_markup
 SONG_COMMAND = get_command("SONG_COMMAND")
 
 
-@app.on_message(filters.command(SONG_COMMAND) & filters.group & ~BANNED_USERS)
-@language
-async def song_commad_group(client, message: Message, _):
-    upl = InlineKeyboardMarkup(
-        [
-            [
-                InlineKeyboardButton(
-                    text=_["SG_B_1"],
-                    url=f"https://t.me/{app.username}?start=song",
-                ),
-            ]
-        ]
-    )
-    await message.reply_text(_["song_1"], reply_markup=upl)
-
+@app.on_message(
+    filters.command(SONG_COMMAND)
+    & filters.group
+    & ~BANNED_USERS
+)
 
 # Song Module
 
 
-@app.on_message(filters.command(SONG_COMMAND) & filters.private & ~BANNED_USERS)
+@app.on_message(
+    filters.command(SONG_COMMAND)
+    & filters.private
+    & ~BANNED_USERS
+)
 @language
 async def song_commad_private(client, message: Message, _):
     await message.delete()
@@ -73,7 +55,9 @@ async def song_commad_private(client, message: Message, _):
             return await mystic.edit_text(_["song_3"])
         if int(duration_sec) > SONG_DOWNLOAD_DURATION_LIMIT:
             return await mystic.edit_text(
-                _["play_4"].format(SONG_DOWNLOAD_DURATION, duration_min)
+                _["play_4"].format(
+                    SONG_DOWNLOAD_DURATION, duration_min
+                )
             )
         buttons = song_markup(_, vidid)
         await mystic.delete()
@@ -112,7 +96,9 @@ async def song_commad_private(client, message: Message, _):
     )
 
 
-@app.on_callback_query(filters.regex(pattern=r"song_back") & ~BANNED_USERS)
+@app.on_callback_query(
+    filters.regex(pattern=r"song_back") & ~BANNED_USERS
+)
 @languageCB
 async def songs_back_helper(client, CallbackQuery, _):
     callback_data = CallbackQuery.data.strip()
@@ -124,7 +110,9 @@ async def songs_back_helper(client, CallbackQuery, _):
     )
 
 
-@app.on_callback_query(filters.regex(pattern=r"song_helper") & ~BANNED_USERS)
+@app.on_callback_query(
+    filters.regex(pattern=r"song_helper") & ~BANNED_USERS
+)
 @languageCB
 async def song_helper_cb(client, CallbackQuery, _):
     callback_data = CallbackQuery.data.strip()
@@ -136,7 +124,9 @@ async def song_helper_cb(client, CallbackQuery, _):
         pass
     if stype == "audio":
         try:
-            formats_available, link = await YouTube.formats(vidid, True)
+            formats_available, link = await YouTube.formats(
+                vidid, True
+            )
         except:
             return await CallbackQuery.edit_message_text(_["song_7"])
         keyboard = InlineKeyboard()
@@ -155,7 +145,7 @@ async def song_helper_cb(client, CallbackQuery, _):
                 fom = x["format_id"]
                 keyboard.row(
                     InlineKeyboardButton(
-                        text=f"{form} Quality Audio = {sz}",
+                        text=f"{form} Kalite = {sz}",
                         callback_data=f"song_download {stype}|{fom}|{vidid}",
                     ),
                 )
@@ -164,17 +154,23 @@ async def song_helper_cb(client, CallbackQuery, _):
                 text=_["BACK_BUTTON"],
                 callback_data=f"song_back {stype}|{vidid}",
             ),
-            InlineKeyboardButton(text=_["CLOSE_BUTTON"], callback_data=f"close"),
+            InlineKeyboardButton(
+                text=_["CLOSE_BUTTON"], callback_data=f"close"
+            ),
         )
-        return await CallbackQuery.edit_message_reply_markup(reply_markup=keyboard)
+        return await CallbackQuery.edit_message_reply_markup(
+            reply_markup=keyboard
+        )
     else:
         try:
-            formats_available, link = await YouTube.formats(vidid, True)
+            formats_available, link = await YouTube.formats(
+                vidid, True
+            )
         except Exception as e:
             print(e)
             return await CallbackQuery.edit_message_text(_["song_7"])
         keyboard = InlineKeyboard()
-        # AVC Formats Only [ Alexa MUSIC BOT ]
+        # AVC Formats Only [ ArchMusic Bot]
         done = [160, 133, 134, 135, 136, 137, 298, 299, 264, 304, 266]
         for x in formats_available:
             check = x["format"]
@@ -196,36 +192,47 @@ async def song_helper_cb(client, CallbackQuery, _):
                 text=_["BACK_BUTTON"],
                 callback_data=f"song_back {stype}|{vidid}",
             ),
-            InlineKeyboardButton(text=_["CLOSE_BUTTON"], callback_data=f"close"),
+            InlineKeyboardButton(
+                text=_["CLOSE_BUTTON"], callback_data=f"close"
+            ),
         )
-        return await CallbackQuery.edit_message_reply_markup(reply_markup=keyboard)
+        return await CallbackQuery.edit_message_reply_markup(
+            reply_markup=keyboard
+        )
 
 
 # Downloading Songs Here
 
 
-@app.on_callback_query(filters.regex(pattern=r"song_download") & ~BANNED_USERS)
+@app.on_callback_query(
+    filters.regex(pattern=r"song_download") & ~BANNED_USERS
+)
 @languageCB
 async def song_download_cb(client, CallbackQuery, _):
     try:
-        await CallbackQuery.answer("ᴅᴏᴡɴʟᴏᴀᴅɪɴɢ...")
+        await CallbackQuery.answer("Ä°ndiriliyor")
     except:
         pass
+    
     callback_data = CallbackQuery.data.strip()
     callback_request = callback_data.split(None, 1)[1]
     stype, format_id, vidid = callback_request.split("|")
     mystic = await CallbackQuery.edit_message_text(_["song_8"])
     yturl = f"https://www.youtube.com/watch?v={vidid}"
+    
     with yt_dlp.YoutubeDL({"quiet": True}) as ytdl:
         x = ytdl.extract_info(yturl, download=False)
+    
     title = (x["title"]).title()
     title = re.sub("\W+", " ", title)
     thumb_image_path = await CallbackQuery.message.download()
-    duration = x["duration"]
+    duration = x.get("duration", 0)
+    
     if stype == "video":
         thumb_image_path = await CallbackQuery.message.download()
         width = CallbackQuery.message.photo.width
         height = CallbackQuery.message.photo.height
+        
         try:
             file_path = await YouTube.download(
                 yturl,
@@ -236,6 +243,7 @@ async def song_download_cb(client, CallbackQuery, _):
             )
         except Exception as e:
             return await mystic.edit_text(_["song_9"].format(e))
+        
         med = InputMediaVideo(
             media=file_path,
             duration=duration,
@@ -245,17 +253,22 @@ async def song_download_cb(client, CallbackQuery, _):
             caption=title,
             supports_streaming=True,
         )
+        
         await mystic.edit_text(_["song_11"])
+        
         await app.send_chat_action(
             chat_id=CallbackQuery.message.chat.id,
-            action=enums.ChatAction.UPLOAD_VIDEO,
+            action=ChatAction.UPLOAD_VIDEO,
         )
+        
         try:
             await CallbackQuery.edit_message_media(media=med)
         except Exception as e:
             print(e)
             return await mystic.edit_text(_["song_10"])
+        
         os.remove(file_path)
+    
     elif stype == "audio":
         try:
             filename = await YouTube.download(
@@ -267,21 +280,56 @@ async def song_download_cb(client, CallbackQuery, _):
             )
         except Exception as e:
             return await mystic.edit_text(_["song_9"].format(e))
+
+        res = (
+            f"ğŸ‘¤ Talep Eden : {CallbackQuery.from_user.mention}\n"
+            f"ğŸ”® BaÅŸlÄ±k : [{title[:23]}]({yturl})\n"
+            f"âŒ›ï¸ SÃ¼re : `{duration}`"
+        )
+
+        visit_button = InlineKeyboardButton(
+            text="ğŸ§ KAYIT KANALI",
+            url=f"https://t.me/ceydalog"
+        )
+
+        visit_markup = InlineKeyboardMarkup(
+            [[visit_button]]
+        )
+        
         med = InputMediaAudio(
             media=filename,
-            caption=title,
+            caption=res,
             thumb=thumb_image_path,
-            title=title,
-            performer=x["uploader"],
+            performer="@kumsalmusicbot"
         )
+        
         await mystic.edit_text(_["song_11"])
+        
         await app.send_chat_action(
             chat_id=CallbackQuery.message.chat.id,
-            action=enums.ChatAction.UPLOAD_AUDIO,
+            action=ChatAction.UPLOAD_AUDIO,
         )
+        
         try:
-            await CallbackQuery.edit_message_media(media=med)
+            await CallbackQuery.edit_message_media(media=med, reply_markup=visit_markup)
         except Exception as e:
             print(e)
             return await mystic.edit_text(_["song_10"])
+        
+        rep = (
+            f"ğŸ‘¤ Talep Eden : {CallbackQuery.from_user.mention}\n"
+            f"ğŸ”® BaÅŸlÄ±k : [{title[:23]}]({yturl})\n"
+            f"âŒ›ï¸ SÃ¼re : `{duration}`"
+        )
+        
+        channel_id = -1002650046199
+        
+        await app.send_audio(
+            chat_id=channel_id,
+            audio=filename,
+            caption=rep,
+            performer="@kumsalmusicbot",
+            thumb=thumb_image_path,
+        )
+        
         os.remove(filename)
